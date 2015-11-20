@@ -55,21 +55,21 @@ class ConcatFilter implements VideoFilterInterface
     {
         $commands = array();
         if(!empty($this->videos)){
-            $concatfilter = '-filter_complex "[0:v:0] [0:a:0]';
+            $concatfilter = '[0:v:0] [0:a:0]';
 
             $i = 1;
             foreach($this->videos as $video){
                 // add video file to input
-                $commands = array_merge($commands, ['-i ' . $video->getPathfile()]);
+                $commands = array_merge($commands, ['-i', $video->getPathfile()]);
                 // define concat filter
                 $concatfilter = $concatfilter . ' [' . $i . ':v:0] [' . $i . ':a:0]';
                 $i++;
             }
 
-            $concatfilter = $concatfilter . ' concat=n=' . $i . ':v=1:a=1 [v] [a]"';
-            $commands = array_merge($commands, [$concatfilter]);
-            $commands = array_merge($commands, ['-map "[v]"']);
-            $commands = array_merge($commands, ['-map "[a]"']);
+            $concatfilter = $concatfilter . ' concat=n=' . $i . ':v=1:a=1 [v] [a]';
+            $commands = array_merge($commands, ['-filter_complex', $concatfilter]);
+            $commands = array_merge($commands, ['-map', '[v]']);
+            $commands = array_merge($commands, ['-map', '[a]']);
         }
         return $commands;
     }
